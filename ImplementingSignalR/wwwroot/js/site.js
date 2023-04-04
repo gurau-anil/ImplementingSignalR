@@ -8,6 +8,17 @@ const connection = new signalR.HubConnectionBuilder()
 .configureLogging(signalR.LogLevel.Information)
     .build();
 
+$('#send-btn').click(function () {
+    var message = $("#message-area").val();
+    connection.invoke("Notify", message).catch(err => console.error(err.toString()));
+});
+
+connection.on("ReceiveMessage", (message) => {
+    console.log(message);
+    $('#message-panel').prepend($('<div />').text(message));
+
+});
+
 async function start() {
     try {
         await connection.start();
